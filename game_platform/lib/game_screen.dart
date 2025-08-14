@@ -47,10 +47,12 @@ class _GameScreenState extends State<GameScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                setState(() {
-                  _gameLogic.generateQuestion();
-                  _controller.clear();
-                });
+                if (mounted) {
+                  setState(() {
+                    _gameLogic.generateQuestion();
+                    _controller.clear();
+                  });
+                }
               },
               child: const Text('Next Question'),
             ),

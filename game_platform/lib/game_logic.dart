@@ -1,9 +1,24 @@
 import 'dart:math';
 
+enum Operation { add, subtract, multiply }
+
+extension OperationExtension on Operation {
+  String get operator {
+    switch (this) {
+      case Operation.add:
+        return '+';
+      case Operation.subtract:
+        return '-';
+      case Operation.multiply:
+        return '*';
+    }
+  }
+}
+
 class MathGameLogic {
   int number1 = 0;
   int number2 = 0;
-  String operation = '+';
+  Operation operation = Operation.add;
   int answer = 0;
 
   void generateQuestion() {
@@ -11,24 +26,22 @@ class MathGameLogic {
     number1 = random.nextInt(100) + 1;
     number2 = random.nextInt(100) + 1;
 
-    // Ensure number1 is always greater than or equal to number2 for subtraction
     if (number1 < number2) {
       final temp = number1;
       number1 = number2;
       number2 = temp;
     }
 
-    final operations = ['+', '-', '*'];
-    operation = operations[random.nextInt(operations.length)];
+    operation = Operation.values[random.nextInt(Operation.values.length)];
 
     switch (operation) {
-      case '+':
+      case Operation.add:
         answer = number1 + number2;
         break;
-      case '-':
+      case Operation.subtract:
         answer = number1 - number2;
         break;
-      case '*':
+      case Operation.multiply:
         answer = number1 * number2;
         break;
     }

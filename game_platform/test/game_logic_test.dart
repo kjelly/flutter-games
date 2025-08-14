@@ -11,14 +11,18 @@ void main() {
     expect(gameLogic.number2, greaterThan(0));
     expect(gameLogic.number2, lessThanOrEqualTo(100));
 
-    expect(['+', '-', '*'].contains(gameLogic.operation), isTrue);
+    expect(gameLogic.operation, isA<Operation>());
 
-    if (gameLogic.operation == '+') {
-      expect(gameLogic.answer, gameLogic.number1 + gameLogic.number2);
-    } else if (gameLogic.operation == '-') {
-      expect(gameLogic.answer, gameLogic.number1 - gameLogic.number2);
-    } else if (gameLogic.operation == '*') {
-      expect(gameLogic.answer, gameLogic.number1 * gameLogic.number2);
+    switch (gameLogic.operation) {
+      case Operation.add:
+        expect(gameLogic.answer, gameLogic.number1 + gameLogic.number2);
+        break;
+      case Operation.subtract:
+        expect(gameLogic.answer, gameLogic.number1 - gameLogic.number2);
+        break;
+      case Operation.multiply:
+        expect(gameLogic.answer, gameLogic.number1 * gameLogic.number2);
+        break;
     }
   });
 }

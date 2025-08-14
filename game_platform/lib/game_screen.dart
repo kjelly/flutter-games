@@ -86,7 +86,7 @@ class _GameScreenState extends State<GameScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '${_gameLogic.number1} ${_gameLogic.operation} ${_gameLogic.number2} = ?',
+              '${_gameLogic.number1} ${_gameLogic.operation.operator} ${_gameLogic.number2} = ?',
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 20),

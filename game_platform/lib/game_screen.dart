@@ -12,6 +12,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   final MathGameLogic _gameLogic = MathGameLogic();
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   String _feedbackMessage = '';
 
   @override
@@ -30,15 +31,20 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   void _checkAnswer() {
-    final userAnswer = int.tryParse(_controller.text);
+    final userAnswerText = _controller.text;
+    final userAnswer = int.tryParse(userAnswerText);
+
     if (userAnswer == null) {
       setState(() {
         _feedbackMessage = 'Invalid Input. Please enter a number.';
       });
+      _controller.clear();
+      _focusNode.requestFocus();
       return;
     }
 
@@ -53,13 +59,17 @@ class _GameScreenState extends State<GameScreen> {
             _gameLogic.generateQuestion();
             _controller.clear();
             _feedbackMessage = '';
+            _focusNode.requestFocus();
           });
         }
       });
     } else {
       setState(() {
-        _feedbackMessage = 'Wrong! The correct answer is ${_gameLogic.answer}.';
+        _feedbackMessage =
+            'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
       });
+      _controller.clear();
+      _focusNode.requestFocus();
     }
   }
 
@@ -81,6 +91,8 @@ class _GameScreenState extends State<GameScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: _controller,
+              focusNode: _focusNode,
+              autofocus: true,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: 'Your Answer',

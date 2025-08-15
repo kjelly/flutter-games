@@ -22,6 +22,9 @@ class MathGameLogic {
   Operation operation = Operation.add;
   int answer = 0;
 
+  int correctAnswers = 0;
+  int totalQuestions = 0;
+
   void generateQuestion() {
     operation = Operation.values[_random.nextInt(Operation.values.length)];
 

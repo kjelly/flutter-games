@@ -12,6 +12,7 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nController = TextEditingController(text: '4'); // Default value
   final _mController = TextEditingController(text: '3'); // Default value
+  bool _isEndlessMode = true;
 
   @override
   void dispose() {
@@ -30,6 +31,7 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
           builder: (context) => MemoryGameScreen(
             sequenceLength: n,
             displayDurationInSeconds: m,
+            isEndlessMode: _isEndlessMode,
           ),
         ),
       );
@@ -84,6 +86,16 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
                     return 'Please enter a positive number';
                   }
                   return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              SwitchListTile(
+                title: const Text('Increase length each round?'),
+                value: _isEndlessMode,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isEndlessMode = value;
+                  });
                 },
               ),
               const SizedBox(height: 40),

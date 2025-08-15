@@ -18,60 +18,71 @@ class _GameScreenState extends State<GameScreen> {
     _gameLogic.generateQuestion();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showResultDialog({
+    required String title,
+    Widget? content,
+    required List<Widget> actions,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: content,
+        actions: actions,
+      ),
+    );
+  }
+
   void _checkAnswer() {
     final userAnswer = int.tryParse(_controller.text);
     if (userAnswer == null) {
-      // Handle cases where the input is not a valid number.
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Invalid Input'),
-          content: const Text('Please enter a valid number.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+      _showResultDialog(
+        title: 'Invalid Input',
+        content: const Text('Please enter a valid number.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
       );
       return;
     }
 
     if (userAnswer == _gameLogic.answer) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Correct!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (mounted) {
-                  setState(() {
-                    _gameLogic.generateQuestion();
-                    _controller.clear();
-                  });
-                }
-              },
-              child: const Text('Next Question'),
-            ),
-          ],
-        ),
+      _showResultDialog(
+        title: 'Correct!',
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (mounted) {
+                setState(() {
+                  _gameLogic.generateQuestion();
+                  _controller.clear();
+                });
+              }
+            },
+            child: const Text('Next Question'),
+          ),
+        ],
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Wrong!'),
-          content: Text('The correct answer is ${_gameLogic.answer}.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Try Again'),
-            ),
-          ],
-        ),
+      _showResultDialog(
+        title: 'Wrong!',
+        content: Text('The correct answer is ${_gameLogic.answer}.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Try Again'),
+          ),
+        ],
       );
     }
   }

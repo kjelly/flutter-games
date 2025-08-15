@@ -37,7 +37,7 @@ class _GameScreenState extends State<GameScreen> {
         _feedbackMessage = 'Invalid Input. Please enter a number.';
       });
       _controller.clear();
-      _focusNode.requestFocus();
+      // Let the user tap the field to refocus and avoid keyboard flicker.
       return;
     }
 
@@ -62,7 +62,7 @@ class _GameScreenState extends State<GameScreen> {
             'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
       });
       _controller.clear();
-      _focusNode.requestFocus();
+      // Let the user tap the field to refocus and avoid keyboard flicker.
     }
   }
 

@@ -94,6 +94,7 @@ class _GameScreenState extends State<GameScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
+              focusNode: FocusNode(canRequestFocus: false),
               onPressed: _checkAnswer,
               child: const Text('Check Answer'),
             ),

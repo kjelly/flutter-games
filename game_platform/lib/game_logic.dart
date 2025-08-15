@@ -21,8 +21,16 @@ class MathGameLogic {
   int number2 = 0;
   Operation operation = Operation.add;
   int answer = 0;
+  int correctAnswers = 0;
+  int totalQuestions = 0;
+  DateTime? questionStartTime;
+  double totalResponseTime = 0.0;
+
+  double get accuracy => totalQuestions == 0 ? 0.0 : (correctAnswers / totalQuestions) * 100;
+  double get averageResponseTime => correctAnswers == 0 ? 0.0 : totalResponseTime / correctAnswers;
 
   void generateQuestion() {
+    questionStartTime = DateTime.now();
     operation = Operation.values[_random.nextInt(Operation.values.length)];
 
     if (operation == Operation.multiply) {

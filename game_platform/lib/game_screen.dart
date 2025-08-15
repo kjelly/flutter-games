@@ -44,25 +44,33 @@ class _GameScreenState extends State<GameScreen> {
       return;
     }
 
-    if (userAnswer == _gameLogic.answer) {
-      _feedbackMessage.value = 'Correct!';
-      // After a short delay, generate a new question.
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          setState(() {
-            _gameLogic.generateQuestion();
-            _controller.clear();
-          });
-          _feedbackMessage.value = '';
-          WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+    setState(() {
+      _gameLogic.totalQuestions++;
+      if (userAnswer == _gameLogic.answer) {
+        _gameLogic.correctAnswers++;
+        if (_gameLogic.questionStartTime != null) {
+          final responseTime = DateTime.now().difference(_gameLogic.questionStartTime!);
+          _gameLogic.totalResponseTime += responseTime.inSeconds;
         }
-      });
-    } else {
-      _feedbackMessage.value =
-          'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
-      _controller.clear();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
-    }
+        _feedbackMessage.value = 'Correct!';
+        // After a short delay, generate a new question.
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            setState(() {
+              _gameLogic.generateQuestion();
+              _controller.clear();
+            });
+            _feedbackMessage.value = '';
+            WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+          }
+        });
+      } else {
+        _feedbackMessage.value =
+            'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
+        _controller.clear();
+        WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+      }
+    });
   }
 
   @override
@@ -76,6 +84,14 @@ class _GameScreenState extends State<GameScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text('Accuracy: ${_gameLogic.accuracy.toStringAsFixed(2)}%'),
+                Text('Avg Speed: ${_gameLogic.averageResponseTime.toStringAsFixed(2)}s'),
+              ],
+            ),
+            const SizedBox(height: 20),
             Text(
               '${_gameLogic.number1} ${_gameLogic.operation.operator} ${_gameLogic.number2} = ?',
               style: const TextStyle(fontSize: 24),

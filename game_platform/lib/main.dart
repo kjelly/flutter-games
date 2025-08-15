@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'game_screen.dart';
+import 'guess_the_number_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const MyHomePage(title: 'Game Platform'),
         '/game/math': (context) => const GameScreen(),
+        '/game/guess-the-number': (context) => const GuessTheNumberScreen(),
       },
     );
   }
@@ -43,6 +45,12 @@ class MyHomePage extends StatelessWidget {
             title: const Text('Math Challenge'),
             onTap: () {
               Navigator.pushNamed(context, '/game/math');
+            },
+          ),
+          ListTile(
+            title: const Text('Guess the Number'),
+            onTap: () {
+              Navigator.pushNamed(context, '/game/guess-the-number');
             },
           ),
         ],

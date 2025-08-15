@@ -25,4 +25,16 @@ void main() {
         break;
     }
   });
+
+  test('multiplication questions should follow the new rule', () {
+    final gameLogic = MathGameLogic();
+    for (var i = 0; i < 100; i++) {
+      gameLogic.generateQuestion();
+      if (gameLogic.operation == Operation.multiply) {
+        if (gameLogic.number1 > 10 && gameLogic.number1 < 100) {
+          expect(gameLogic.number2, lessThan(10));
+        }
+      }
+    }
+  });
 }

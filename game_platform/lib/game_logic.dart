@@ -23,16 +23,25 @@ class MathGameLogic {
   int answer = 0;
 
   void generateQuestion() {
-    number1 = _random.nextInt(100) + 1;
-    number2 = _random.nextInt(100) + 1;
+    operation = Operation.values[_random.nextInt(Operation.values.length)];
+
+    if (operation == Operation.multiply) {
+      number1 = _random.nextInt(100) + 1;
+      if (number1 > 10 && number1 < 100) {
+        number2 = _random.nextInt(9) + 1;
+      } else {
+        number2 = _random.nextInt(100) + 1;
+      }
+    } else {
+      number1 = _random.nextInt(100) + 1;
+      number2 = _random.nextInt(100) + 1;
+    }
 
     if (number1 < number2) {
       final temp = number1;
       number1 = number2;
       number2 = temp;
     }
-
-    operation = Operation.values[_random.nextInt(Operation.values.length)];
 
     switch (operation) {
       case Operation.add:

@@ -85,6 +85,7 @@ class _GameScreenState extends State<GameScreen> {
               decoration: const InputDecoration(
                 labelText: 'Your Answer',
               ),
+              onSubmitted: (_) => _checkAnswer(),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

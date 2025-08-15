@@ -15,7 +15,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Game Platform'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MyHomePage(title: 'Game Platform'),
+        '/game/math': (context) => const GameScreen(),
+      },
     );
   }
 }
@@ -36,10 +40,7 @@ class MyHomePage extends StatelessWidget {
           ListTile(
             title: const Text('Math Challenge'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const GameScreen()),
-              );
+              Navigator.pushNamed(context, '/game/math');
             },
           ),
         ],

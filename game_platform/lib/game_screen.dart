@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'game_logic.dart';
 
 class GameScreen extends StatefulWidget {
@@ -11,11 +12,19 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   final MathGameLogic _gameLogic = MathGameLogic();
   final TextEditingController _controller = TextEditingController();
+  String _feedbackMessage = '';
 
   @override
   void initState() {
     super.initState();
     _gameLogic.generateQuestion();
+    _controller.addListener(() {
+      if (_feedbackMessage.isNotEmpty) {
+        setState(() {
+          _feedbackMessage = '';
+        });
+      }
+    });
   }
 
   @override
@@ -24,66 +33,33 @@ class _GameScreenState extends State<GameScreen> {
     super.dispose();
   }
 
-  Future<void> _showResultDialog({
-    required String title,
-    Widget? content,
-    required List<Widget> actions,
-  }) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: content,
-        actions: actions,
-      ),
-    );
-  }
-
   void _checkAnswer() {
     final userAnswer = int.tryParse(_controller.text);
     if (userAnswer == null) {
-      _showResultDialog(
-        title: 'Invalid Input',
-        content: const Text('Please enter a valid number.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      );
+      setState(() {
+        _feedbackMessage = 'Invalid Input. Please enter a number.';
+      });
       return;
     }
 
     if (userAnswer == _gameLogic.answer) {
-      _showResultDialog(
-        title: 'Correct!',
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              if (mounted) {
-                setState(() {
-                  _gameLogic.generateQuestion();
-                  _controller.clear();
-                });
-              }
-            },
-            child: const Text('Next Question'),
-          ),
-        ],
-      );
+      setState(() {
+        _feedbackMessage = 'Correct!';
+      });
+      // After a short delay, generate a new question.
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          setState(() {
+            _gameLogic.generateQuestion();
+            _controller.clear();
+            _feedbackMessage = '';
+          });
+        }
+      });
     } else {
-      _showResultDialog(
-        title: 'Wrong!',
-        content: Text('The correct answer is ${_gameLogic.answer}.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Try Again'),
-          ),
-        ],
-      );
+      setState(() {
+        _feedbackMessage = 'Wrong! The correct answer is ${_gameLogic.answer}.';
+      });
     }
   }
 
@@ -114,6 +90,14 @@ class _GameScreenState extends State<GameScreen> {
             ElevatedButton(
               onPressed: _checkAnswer,
               child: const Text('Check Answer'),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              _feedbackMessage,
+              style: TextStyle(
+                fontSize: 18,
+                color: _feedbackMessage == 'Correct!' ? Colors.green : Colors.red,
+              ),
             ),
           ],
         ),

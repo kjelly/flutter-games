@@ -16,15 +16,15 @@ extension OperationExtension on Operation {
 }
 
 class MathGameLogic {
+  final _random = Random();
   int number1 = 0;
   int number2 = 0;
   Operation operation = Operation.add;
   int answer = 0;
 
   void generateQuestion() {
-    final random = Random();
-    number1 = random.nextInt(100) + 1;
-    number2 = random.nextInt(100) + 1;
+    number1 = _random.nextInt(100) + 1;
+    number2 = _random.nextInt(100) + 1;
 
     if (number1 < number2) {
       final temp = number1;
@@ -32,7 +32,7 @@ class MathGameLogic {
       number2 = temp;
     }
 
-    operation = Operation.values[random.nextInt(Operation.values.length)];
+    operation = Operation.values[_random.nextInt(Operation.values.length)];
 
     switch (operation) {
       case Operation.add:

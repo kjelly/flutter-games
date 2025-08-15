@@ -35,6 +35,7 @@ class _GameScreenState extends State<GameScreen> {
   void _checkAnswer() {
     final userAnswerText = _controller.text;
     final userAnswer = int.tryParse(userAnswerText);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
 
     if (userAnswer == null) {
       _feedbackMessage.value = 'Invalid Input. Please enter a number.';

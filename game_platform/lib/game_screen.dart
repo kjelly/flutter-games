@@ -19,13 +19,6 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     _gameLogic.generateQuestion();
-    _controller.addListener(() {
-      if (_feedbackMessage.isNotEmpty) {
-        setState(() {
-          _feedbackMessage = '';
-        });
-      }
-    });
   }
 
   @override

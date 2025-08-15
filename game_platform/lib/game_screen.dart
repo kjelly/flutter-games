@@ -19,6 +19,9 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     _gameLogic.generateQuestion();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
@@ -37,7 +40,7 @@ class _GameScreenState extends State<GameScreen> {
         _feedbackMessage = 'Invalid Input. Please enter a number.';
       });
       _controller.clear();
-      _focusNode.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
       return;
     }
 
@@ -53,6 +56,7 @@ class _GameScreenState extends State<GameScreen> {
             _controller.clear();
             _feedbackMessage = '';
           });
+          WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
         }
       });
     } else {
@@ -61,7 +65,7 @@ class _GameScreenState extends State<GameScreen> {
             'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
       });
       _controller.clear();
-      _focusNode.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
     }
   }
 
@@ -84,7 +88,6 @@ class _GameScreenState extends State<GameScreen> {
             TextField(
               controller: _controller,
               focusNode: _focusNode,
-              autofocus: true,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.send,
               decoration: const InputDecoration(

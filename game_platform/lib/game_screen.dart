@@ -52,7 +52,6 @@ class _GameScreenState extends State<GameScreen> {
             _gameLogic.generateQuestion();
             _controller.clear();
             _feedbackMessage = '';
-            _focusNode.requestFocus();
           });
         }
       });

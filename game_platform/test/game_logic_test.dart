@@ -37,4 +37,36 @@ void main() {
       }
     }
   });
+
+  group('statistics', () {
+    test('initial values should be correct', () {
+      final gameLogic = MathGameLogic();
+      expect(gameLogic.correctAnswers, 0);
+      expect(gameLogic.totalQuestions, 0);
+      expect(gameLogic.totalResponseTime, 0.0);
+      expect(gameLogic.accuracy, 0.0);
+      expect(gameLogic.averageResponseTime, 0.0);
+      expect(gameLogic.questionStartTime, isNull);
+    });
+
+    test('generateQuestion should set questionStartTime', () {
+      final gameLogic = MathGameLogic();
+      gameLogic.generateQuestion();
+      expect(gameLogic.questionStartTime, isNotNull);
+    });
+
+    test('accuracy should be calculated correctly', () {
+      final gameLogic = MathGameLogic();
+      gameLogic.totalQuestions = 10;
+      gameLogic.correctAnswers = 5;
+      expect(gameLogic.accuracy, 50.0);
+    });
+
+    test('averageResponseTime should be calculated correctly', () {
+      final gameLogic = MathGameLogic();
+      gameLogic.correctAnswers = 2;
+      gameLogic.totalResponseTime = 10.0;
+      expect(gameLogic.averageResponseTime, 5.0);
+    });
+  });
 }

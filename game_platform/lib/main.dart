@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'game_screen.dart';
 import 'guess_the_number_screen.dart';
+import 'memory_game/memory_game_settings_screen.dart';
 import 'one_a_two_b_screen.dart';
 
 void main() {
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/game/math': (context) => const GameScreen(),
         '/game/guess-the-number': (context) => const GuessTheNumberScreen(),
         '/game/1a2b': (context) => const OneATwoBScreen(),
+        '/game/memory': (context) => const MemoryGameSettingsScreen(),
       },
     );
   }
@@ -59,6 +61,12 @@ class MyHomePage extends StatelessWidget {
             title: const Text('1A2B Guessing Game'),
             onTap: () {
               Navigator.pushNamed(context, '/game/1a2b');
+            },
+          ),
+          ListTile(
+            title: const Text('Memory Game'),
+            onTap: () {
+              Navigator.pushNamed(context, '/game/memory');
             },
           ),
         ],

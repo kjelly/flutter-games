@@ -7,12 +7,14 @@ import 'emoji_button.dart';
 class MemoryGameScreen extends StatefulWidget {
   final int sequenceLength;
   final int displayDurationInSeconds;
+  final bool isEndlessMode;
   final int numberOfEmojis;
 
   const MemoryGameScreen({
     Key? key,
     required this.sequenceLength,
     required this.displayDurationInSeconds,
+    required this.isEndlessMode,
     required this.numberOfEmojis,
   }) : super(key: key);
 
@@ -78,7 +80,13 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     final isCorrect = _gameLogic.checkGuess(emoji);
 
     if (_gameLogic.gameState == GameState.won) {
-      _startNextRound();
+      if (widget.isEndlessMode) {
+        _startNextRound();
+      } else {
+        setState(() {
+          _message = "Congratulations! You won!";
+        });
+      }
     } else if (_gameLogic.gameState == GameState.lost) {
       setState(() {
         _message = "Wrong! Game Over.";
@@ -107,13 +115,14 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               // Message area
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Text(
-                  "Level: ${_gameLogic.currentLength}",
-                  style: Theme.of(context).textTheme.headlineMedium,
+              if (widget.isEndlessMode)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Text(
+                    "Level: ${_gameLogic.currentLength}",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
                 ),
-              ),
               Text(
                 _message,
                 style: Theme.of(context).textTheme.titleLarge,

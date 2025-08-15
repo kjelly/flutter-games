@@ -13,56 +13,55 @@ class _GameScreenState extends State<GameScreen> {
   final MathGameLogic _gameLogic = MathGameLogic();
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String _feedbackMessage = '';
+  final ValueNotifier<String> _feedbackMessage = ValueNotifier<String>('');
 
   @override
   void initState() {
     super.initState();
     _gameLogic.generateQuestion();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    _feedbackMessage.dispose();
     super.dispose();
   }
 
   void _checkAnswer() {
     final userAnswerText = _controller.text;
     final userAnswer = int.tryParse(userAnswerText);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
 
     if (userAnswer == null) {
-      setState(() {
-        _feedbackMessage = 'Invalid Input. Please enter a number.';
-      });
+      _feedbackMessage.value = 'Invalid Input. Please enter a number.';
       _controller.clear();
-      _focusNode.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
       return;
     }
 
     if (userAnswer == _gameLogic.answer) {
-      setState(() {
-        _feedbackMessage = 'Correct!';
-      });
+      _feedbackMessage.value = 'Correct!';
       // After a short delay, generate a new question.
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
           setState(() {
             _gameLogic.generateQuestion();
             _controller.clear();
-            _feedbackMessage = '';
-            _focusNode.requestFocus();
           });
+          _feedbackMessage.value = '';
+          WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
         }
       });
     } else {
-      setState(() {
-        _feedbackMessage =
-            'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
-      });
+      _feedbackMessage.value =
+          'Wrong! You answered $userAnswerText, but the correct answer is ${_gameLogic.answer}.';
       _controller.clear();
-      _focusNode.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
     }
   }
 
@@ -85,25 +84,25 @@ class _GameScreenState extends State<GameScreen> {
             TextField(
               controller: _controller,
               focusNode: _focusNode,
-              autofocus: true,
               keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.send,
               decoration: const InputDecoration(
                 labelText: 'Your Answer',
               ),
               onSubmitted: (_) => _checkAnswer(),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _checkAnswer,
-              child: const Text('Check Answer'),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              _feedbackMessage,
-              style: TextStyle(
-                fontSize: 18,
-                color: _feedbackMessage == 'Correct!' ? Colors.green : Colors.red,
-              ),
+            ValueListenableBuilder<String>(
+              valueListenable: _feedbackMessage,
+              builder: (context, message, child) {
+                return Text(
+                  message,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: message == 'Correct!' ? Colors.green : Colors.red,
+                  ),
+                );
+              },
             ),
           ],
         ),

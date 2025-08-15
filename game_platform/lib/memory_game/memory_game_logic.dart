@@ -10,15 +10,26 @@ class MemoryGameLogic {
   final List<GameShape> allShapes = GameShape.values;
 
   int currentUserIndex = 0;
+  int currentLength = 0;
   GameState gameState = GameState.showingSequence;
 
-  void generateSequence(int length) {
+  void _generateSequence() {
     sequence.clear();
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < currentLength; i++) {
       sequence.add(allShapes[_random.nextInt(allShapes.length)]);
     }
     currentUserIndex = 0;
     gameState = GameState.showingSequence;
+  }
+
+  void startNewGame(int initialLength) {
+    currentLength = initialLength;
+    _generateSequence();
+  }
+
+  void nextLevel() {
+    currentLength++;
+    _generateSequence();
   }
 
   void startUserInputPhase() {

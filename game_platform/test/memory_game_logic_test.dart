@@ -9,18 +9,32 @@ void main() {
       gameLogic = MemoryGameLogic();
     });
 
-    group('generateSequence', () {
-      test('should generate a sequence of the correct length', () {
-        gameLogic.generateSequence(5);
+    group('startNewGame', () {
+      test('should generate a sequence of the initial length', () {
+        gameLogic.startNewGame(5);
         expect(gameLogic.sequence.length, 5);
+        expect(gameLogic.currentLength, 5);
       });
 
       test('should reset game state', () {
         gameLogic.gameState = GameState.won;
         gameLogic.currentUserIndex = 3;
 
-        gameLogic.generateSequence(5);
+        gameLogic.startNewGame(5);
 
+        expect(gameLogic.gameState, GameState.showingSequence);
+        expect(gameLogic.currentUserIndex, 0);
+      });
+    });
+
+    group('nextLevel', () {
+      test('should increment currentLength and generate a new sequence', () {
+        gameLogic.startNewGame(3);
+        expect(gameLogic.currentLength, 3);
+
+        gameLogic.nextLevel();
+        expect(gameLogic.currentLength, 4);
+        expect(gameLogic.sequence.length, 4);
         expect(gameLogic.gameState, GameState.showingSequence);
         expect(gameLogic.currentUserIndex, 0);
       });
@@ -35,7 +49,9 @@ void main() {
 
     group('checkGuess', () {
       setUp(() {
+        gameLogic.startNewGame(3);
         // Manually set a predictable sequence for testing
+        gameLogic.sequence.clear();
         gameLogic.sequence.addAll([
           GameShape.circle,
           GameShape.square,

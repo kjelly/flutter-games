@@ -36,8 +36,13 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   }
 
   void _startGame() {
-    _gameLogic.generateSequence(widget.sequenceLength);
+    _gameLogic.startNewGame(widget.sequenceLength);
     _message = "Memorize the sequence...";
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel(); // Cancel any existing timer
     _timer = Timer(Duration(seconds: widget.displayDurationInSeconds), () {
       if (mounted) {
         setState(() {
@@ -48,20 +53,39 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     });
   }
 
+  void _startNextRound() {
+    setState(() {
+      _message = "Correct! Get ready for the next level...";
+    });
+
+    // Short delay before showing the next sequence
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted && _gameLogic.gameState != GameState.lost) {
+        setState(() {
+          _gameLogic.nextLevel();
+          _message = "Memorize the new sequence...";
+          _startTimer();
+        });
+      }
+    });
+  }
+
   void _handleGuess(GameShape shape) {
     if (_gameLogic.gameState != GameState.waitingForInput) return;
 
     final isCorrect = _gameLogic.checkGuess(shape);
-    setState(() {
-      if (_gameLogic.gameState == GameState.won) {
-        _message = "Congratulations! You won!";
-      } else if (_gameLogic.gameState == GameState.lost) {
-        _message = "Wrong! You lost. Try again!";
-      } else if (isCorrect) {
-        // Optionally give feedback for each correct press
-        // _message = "Correct!";
-      }
-    });
+
+    if (_gameLogic.gameState == GameState.won) {
+      _startNextRound();
+    } else if (_gameLogic.gameState == GameState.lost) {
+      setState(() {
+        _message = "Wrong! Game Over.";
+      });
+    } else if (isCorrect) {
+      setState(() {
+        // Optional feedback for each correct press, can be empty
+      });
+    }
   }
 
   void _playAgain() {
@@ -82,8 +106,13 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
             children: <Widget>[
               // Message area
               Text(
+                "Level: ${_gameLogic.currentLength}",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 20),
+              Text(
                 _message,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),

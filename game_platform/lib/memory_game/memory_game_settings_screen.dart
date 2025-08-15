@@ -53,7 +53,7 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
                 controller: _nController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: 'Sequence Length (n)',
+                  labelText: 'Initial Sequence Length (n)',
                   hintText: 'e.g., 4',
                 ),
                 validator: (value) {

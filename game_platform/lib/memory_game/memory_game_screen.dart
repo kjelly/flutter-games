@@ -1,19 +1,21 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'memory_game_logic.dart';
-import 'shape_widget.dart';
-import 'shape_button.dart';
+import 'emoji_widget.dart';
+import 'emoji_button.dart';
 
 class MemoryGameScreen extends StatefulWidget {
   final int sequenceLength;
   final int displayDurationInSeconds;
   final bool isEndlessMode;
+  final int numberOfEmojis;
 
   const MemoryGameScreen({
     Key? key,
     required this.sequenceLength,
     required this.displayDurationInSeconds,
     required this.isEndlessMode,
+    required this.numberOfEmojis,
   }) : super(key: key);
 
   @override
@@ -38,7 +40,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   }
 
   void _startGame() {
-    _gameLogic.startNewGame(widget.sequenceLength);
+    _gameLogic.startNewGame(widget.sequenceLength, widget.numberOfEmojis);
     _message = "Memorize the sequence...";
     _startTimer();
   }
@@ -72,10 +74,10 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     });
   }
 
-  void _handleGuess(GameShape shape) {
+  void _handleGuess(String emoji) {
     if (_gameLogic.gameState != GameState.waitingForInput) return;
 
-    final isCorrect = _gameLogic.checkGuess(shape);
+    final isCorrect = _gameLogic.checkGuess(emoji);
 
     if (_gameLogic.gameState == GameState.won) {
       if (widget.isEndlessMode) {
@@ -154,7 +156,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           runSpacing: 10.0,
           alignment: WrapAlignment.center,
           children: _gameLogic.sequence
-              .map((shape) => ShapeWidget(shape: shape, size: 60))
+              .map((emoji) => EmojiWidget(emoji: emoji, size: 60))
               .toList(),
         );
       case GameState.waitingForInput:
@@ -162,10 +164,10 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           spacing: 10.0,
           runSpacing: 10.0,
           alignment: WrapAlignment.center,
-          children: GameShape.values
-              .map((shape) => ShapeButton(
-                    shape: shape,
-                    onPressed: () => _handleGuess(shape),
+          children: _gameLogic.activeEmojis
+              .map((emoji) => EmojiButton(
+                    emoji: emoji,
+                    onPressed: () => _handleGuess(emoji),
                   ))
               .toList(),
         );
@@ -177,7 +179,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           runSpacing: 10.0,
           alignment: WrapAlignment.center,
           children: _gameLogic.sequence
-              .map((shape) => ShapeWidget(shape: shape, size: 60))
+              .map((emoji) => EmojiWidget(emoji: emoji, size: 60))
               .toList(),
         );
     }

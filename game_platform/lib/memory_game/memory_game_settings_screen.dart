@@ -12,12 +12,14 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nController = TextEditingController(text: '4'); // Default value
   final _mController = TextEditingController(text: '3'); // Default value
+  final _xController = TextEditingController(text: '8'); // Default value
   bool _isEndlessMode = true;
 
   @override
   void dispose() {
     _nController.dispose();
     _mController.dispose();
+    _xController.dispose();
     super.dispose();
   }
 
@@ -25,6 +27,7 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
     if (_formKey.currentState!.validate()) {
       final n = int.parse(_nController.text);
       final m = int.parse(_mController.text);
+      final x = int.parse(_xController.text);
 
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -32,6 +35,7 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
             sequenceLength: n,
             displayDurationInSeconds: m,
             isEndlessMode: _isEndlessMode,
+            numberOfEmojis: x,
           ),
         ),
       );
@@ -84,6 +88,25 @@ class _MemoryGameSettingsScreenState extends State<MemoryGameSettingsScreen> {
                   final m = int.tryParse(value);
                   if (m == null || m <= 0) {
                     return 'Please enter a positive number';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _xController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Number of Emojis (x)',
+                  hintText: '5-15',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a number';
+                  }
+                  final x = int.tryParse(value);
+                  if (x == null || x < 5 || x > 15) {
+                    return 'Please enter a number between 5 and 15';
                   }
                   return null;
                 },

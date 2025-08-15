@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'game_logic.dart';
 
@@ -73,48 +72,38 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: RawKeyboardListener(
-          focusNode: FocusNode(), // Does not need to be managed
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.enter) {
-                _checkAnswer();
-              }
-            }
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '${_gameLogic.number1} ${_gameLogic.operation.operator} ${_gameLogic.number2} = ?',
-                style: const TextStyle(fontSize: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '${_gameLogic.number1} ${_gameLogic.operation.operator} ${_gameLogic.number2} = ?',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.send,
+              decoration: const InputDecoration(
+                labelText: 'Your Answer',
               ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.send, // Keep for mobile keyboard action button
-                decoration: const InputDecoration(
-                  labelText: 'Your Answer',
-                ),
-                // onSubmitted is removed
-              ),
-              const SizedBox(height: 20),
-              ValueListenableBuilder<String>(
-                valueListenable: _feedbackMessage,
-                builder: (context, message, child) {
-                  return Text(
-                    message,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: message == 'Correct!' ? Colors.green : Colors.red,
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+              onSubmitted: (_) => _checkAnswer(),
+            ),
+            const SizedBox(height: 20),
+            ValueListenableBuilder<String>(
+              valueListenable: _feedbackMessage,
+              builder: (context, message, child) {
+                return Text(
+                  message,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: message == 'Correct!' ? Colors.green : Colors.red,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

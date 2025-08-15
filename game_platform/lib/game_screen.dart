@@ -93,12 +93,6 @@ class _GameScreenState extends State<GameScreen> {
               onSubmitted: (_) => _checkAnswer(),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              focusNode: FocusNode(canRequestFocus: false),
-              onPressed: _checkAnswer,
-              child: const Text('Check Answer'),
-            ),
-            const SizedBox(height: 20),
             Text(
               _feedbackMessage,
               style: TextStyle(

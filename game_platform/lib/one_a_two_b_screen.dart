@@ -70,6 +70,8 @@ class _OneATwoBScreenState extends State<OneATwoBScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final reversedHistory = _gameLogic.history.reversed.toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('1A2B Guessing Game'),
@@ -80,9 +82,9 @@ class _OneATwoBScreenState extends State<OneATwoBScreen> {
           children: <Widget>[
             Expanded(
               child: ListView.builder(
-                itemCount: _gameLogic.history.length,
+                itemCount: reversedHistory.length,
                 itemBuilder: (context, index) {
-                  final item = _gameLogic.history[index];
+                  final item = reversedHistory[index];
                   return ListTile(
                     title: Text('Guess: ${item.guess}'),
                     trailing: Text('Result: ${item.result}'),

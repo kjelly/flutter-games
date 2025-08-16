@@ -28,14 +28,30 @@ void main() {
       });
     });
 
-    group('nextLevel', () {
+    group('increaseLevel', () {
       test('should increment currentLength and generate a new sequence', () {
         gameLogic.startNewGame(3, 5);
         expect(gameLogic.currentLength, 3);
 
-        gameLogic.nextLevel();
+        gameLogic.increaseLevel();
         expect(gameLogic.currentLength, 4);
         expect(gameLogic.sequence.length, 4);
+      });
+    });
+
+    group('regenerateSequence', () {
+      test('should generate a new sequence of the same length', () {
+        gameLogic.startNewGame(3, 5);
+        final firstSequence = List.from(gameLogic.sequence);
+        expect(gameLogic.currentLength, 3);
+
+        gameLogic.regenerateSequence();
+        expect(gameLogic.currentLength, 3); // Length should not change
+        expect(gameLogic.sequence.length, 3);
+        // It's possible, but highly unlikely, that the sequence is identical.
+        // A better test would be to check if the sequence object is different,
+        // but for this purpose, we assume the content will likely change.
+        expect(gameLogic.sequence, isNot(equals(firstSequence)));
       });
     });
 

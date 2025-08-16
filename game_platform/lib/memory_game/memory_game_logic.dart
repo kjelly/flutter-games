@@ -41,8 +41,12 @@ class MemoryGameLogic {
     _generateSequence();
   }
 
-  void nextLevel() {
+  void increaseLevel() {
     currentLength++;
+    _generateSequence();
+  }
+
+  void regenerateSequence() {
     _generateSequence();
   }
 

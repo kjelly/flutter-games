@@ -7,12 +7,14 @@ import 'emoji_button.dart';
 class MemoryGameScreen extends StatefulWidget {
   final int sequenceLength;
   final int displayDurationInSeconds;
+  final bool isEndlessMode;
   final int numberOfEmojis;
 
   const MemoryGameScreen({
     Key? key,
     required this.sequenceLength,
     required this.displayDurationInSeconds,
+    required this.isEndlessMode,
     required this.numberOfEmojis,
   }) : super(key: key);
 
@@ -55,7 +57,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     });
   }
 
-  void _startNextRound() {
+  void _startIncreasingLevelRound() {
     setState(() {
       _message = "Correct! Get ready for the next level...";
     });
@@ -64,7 +66,24 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted && _gameLogic.gameState != GameState.lost) {
         setState(() {
-          _gameLogic.nextLevel();
+          _gameLogic.increaseLevel();
+          _message = "Memorize the new sequence...";
+          _startTimer();
+        });
+      }
+    });
+  }
+
+  void _startSameLengthRound() {
+    setState(() {
+      _message = "Correct! Get ready for the next round...";
+    });
+
+    // Short delay before showing the next sequence
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted && _gameLogic.gameState != GameState.lost) {
+        setState(() {
+          _gameLogic.regenerateSequence();
           _message = "Memorize the new sequence...";
           _startTimer();
         });
@@ -78,7 +97,11 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     final isCorrect = _gameLogic.checkGuess(emoji);
 
     if (_gameLogic.gameState == GameState.won) {
-      _startNextRound();
+      if (widget.isEndlessMode) {
+        _startIncreasingLevelRound();
+      } else {
+        _startSameLengthRound();
+      }
     } else if (_gameLogic.gameState == GameState.lost) {
       setState(() {
         _message = "Wrong! Game Over.";
